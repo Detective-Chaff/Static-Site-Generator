@@ -3,8 +3,8 @@ from src.htmlnode import HTMLnode
 
 class LeafNode(HTMLnode):
     # constructor
-    def __init__(self, value, props = None, tag = None):
-        super().__init__(tag, value, props=props)
+    def __init__(self, tag, value, props = None,):
+        super().__init__(tag, value, None, props)
     
     def to_html(self):
         if self._value is None or len(self._value) == 0:
