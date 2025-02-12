@@ -1,10 +1,10 @@
 import unittest
-from htmlnode import HTMLnode
+from src.htmlnode import HTMLnode
 
 class TestHtmlNode(unittest.TestCase):
     def test_props(self):
         node = HTMLnode("h1", "something", props={"href": "myHref", "class": "myClass"})
-        self.assertEqual(node.props_to_html()," href=myHref class=myClass")
+        self.assertEqual(node.props_to_html(),' href="myHref" class="myClass"')
     
     def test_tostring(self):
         node = HTMLnode("p", "test paragraph")

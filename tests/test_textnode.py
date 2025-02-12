@@ -1,8 +1,7 @@
 
-from typing import Text
 import unittest
 
-from textnode import TextNode, TextType
+from src.textnode import TextNode, TextType
 
 class TestTextNode(unittest.TestCase):
     def test_eq(self):

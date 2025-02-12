@@ -20,7 +20,7 @@ class HTMLnode():
     def set_value(self, value):
         self._value = value
     
-    # chiuldren
+    # children
     def get_children(self):
         return self._children
     def set_children(self, children):
@@ -37,10 +37,12 @@ class HTMLnode():
         raise NotImplementedError()
     
     def props_to_html(self):
-        test = ""
+        if self._props is None:
+            return ""
+        props_html = ""
         for k, v in self.get_props().items():
-            test += f" {k}={v}"
-        return test
+            props_html += f' {k}="{v}"'
+        return props_html
     
     def __repr__(self):
         return f"HTMLnode(tag: {self._tag}, value: {self._value}, children: {self._children}, props: {self._props})"
