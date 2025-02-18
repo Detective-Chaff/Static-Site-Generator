@@ -16,3 +16,6 @@ class TestHtmlNode(unittest.TestCase):
         self.assertIsNone(node.get_value())
         self.assertIsNone(node.get_children())
         self.assertIsNone(node.get_props())
+
+if __name__ == "__main__":
+    unittest.main()

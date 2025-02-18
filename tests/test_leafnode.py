@@ -26,3 +26,6 @@ class TestLeafNode(unittest.TestCase):
     def test_value_empty_str(self):
         node = LeafNode(None, "")
         self.assertRaises(ValueError)
+
+if __name__ == "__main__":
+    unittest.main()
