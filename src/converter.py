@@ -1,6 +1,15 @@
 from src.textnode import TextNode, TextType
 from src.leafnode import LeafNode
+from enum import Enum
 import re
+
+class BlockType(Enum):
+    PARAGRAPH = "paragraph"
+    HEADING = "heading"
+    CODE = "code"
+    QUOTE = "quote"
+    U_LIST = "unordered_list"
+    O_LIST = "ordered_list"
 
 class Converter():
 
@@ -139,6 +148,57 @@ class Converter():
 
         return new_nodes
 
-                
+    @staticmethod    
+    def markdown_to_blocks(markdown):
+        stripped = []
+        if len(markdown) == 0 or markdown == " ":
+            return stripped
+        segments = markdown.split('\n\n')
+        stripped = list(filter(lambda x: None if x == "" else x, list(map(lambda x: x.lstrip().rstrip(),segments))))
+        return stripped
 
+    @staticmethod
+    def block_to_blocktype(block):
+        if not block:
+            return block
+        
+        # Code Block
+        if block[:3] == "```" and block[-3:] == "```":
+            return BlockType.CODE
+        
+        # Heading
+        heading = r'^(#{1,6}\s)+'
+        pattern = re.compile(heading)
+        match = pattern.match(block)
+        if match:
+            return BlockType.HEADING
+        
+        # Unordered List
+        ul = r'^[\*-] |\r?\\n?[\*-] '
+        pattern = re.compile(ul)
+        match = pattern.match(block)
+        if match:
+            return BlockType.U_LIST
+        
+        #Quote
+        ul = r'^>|\r?\\n?>'
+        pattern = re.compile(ul)
+        match = pattern.match(block)
+        if match:
+            return BlockType.QUOTE
+        
+        # Ordered List
+        if block.startswith("1. "):
+            start = 1
+            lines = block.split("\n")
+            for line in lines:
+                if line.startswith(f"{start}. "):
+                    start += 1
+                    continue
+                else:
+                    return BlockType.PARAGRAPH
+            return BlockType.O_LIST
+        
+        return BlockType.PARAGRAPH
+        
 

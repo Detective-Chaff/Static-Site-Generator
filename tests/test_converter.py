@@ -1,5 +1,5 @@
 import unittest
-from src.converter import Converter
+from src.converter import BlockType, Converter
 from src.textnode import TextNode, TextType
 from src.leafnode import LeafNode
 
@@ -312,6 +312,62 @@ class TestConverter(unittest.TestCase):
             node_list,
         )
 
+    def test_markdown_to_blocks(self):
+        text = '''
+# This is a heading
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is the first list item in a list block
+* This is a list item
+* This is another list item
+'''
+        result = Converter.markdown_to_blocks(text)
+        self.assertListEqual(
+            [
+                '# This is a heading', 
+                'This is a paragraph of text. It has some **bold** and *italic* words inside of it.', 
+                '* This is the first list item in a list block\n* This is a list item\n* This is another list item',
+            ],
+            result,
+        )
+    
+    def test_markdown_to_blocks_newlines(self):
+        md = """
+This is **bolded** paragraph
+
+
+
+
+This is another paragraph with *italic* text and `code` here
+This is the same paragraph on a new line
+
+* This is a list
+* with items
+"""
+        blocks = Converter.markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line",
+                "* This is a list\n* with items",
+            ],
+        )
+
+    def test_block_to_block_types(self):
+        block = "# heading"
+        self.assertEqual(Converter.block_to_blocktype(block), BlockType.HEADING)
+        block = "```\ncode\n```"
+        self.assertEqual(Converter.block_to_blocktype(block), BlockType.CODE)
+        block = "> quote\n> more quote"
+        self.assertEqual(Converter.block_to_blocktype(block), BlockType.QUOTE)
+        block = "* list\n* items"
+        self.assertEqual(Converter.block_to_blocktype(block), BlockType.U_LIST)
+        block = "1. list\n2. items"
+        self.assertEqual(Converter.block_to_blocktype(block), BlockType.O_LIST)
+        block = "paragraph"
+        self.assertEqual(Converter.block_to_blocktype(block), BlockType.PARAGRAPH)
 
 if __name__ == "__main__":
     unittest.main()
