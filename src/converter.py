@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+from src.parentnode import ParentNode
+>>>>>>> 69da20b (finished converting markdown to html functionality)
 from src.textnode import TextNode, TextType
 from src.leafnode import LeafNode
 from enum import Enum
@@ -201,4 +205,100 @@ class Converter():
         
         return BlockType.PARAGRAPH
         
+<<<<<<< HEAD
+=======
+    @staticmethod
+    def markdown_to_html_node(in_markdown):
+        # 1. check markdown isn't empty
+        if not in_markdown:
+            raise Exception("markdown is empty")
+        blocks = Converter.markdown_to_blocks(in_markdown)
+        parent = []
+        for block in blocks:
+            block_type = Converter.block_to_blocktype(block)
+            match(block_type):
+                case (BlockType.PARAGRAPH):
+                    parent.append(Converter.create_paragrpah(block))
+                case(BlockType.HEADING):
+                    parent.append(Converter.create_heading(block))
+                case(BlockType.CODE):
+                    parent = ParentNode("pre", None)
+                    parent._children = Converter.create_codeblock(block)
+                    return ParentNode("div", parent)
+                case(BlockType.QUOTE):
+                    parent.append(Converter.create_block_quote(block))
+                case(BlockType.U_LIST):
+                    parent.append(Converter.create_unordered_list(block))
+                case(BlockType.O_LIST):
+                    parent.append(Converter.create_ordered_list(block))
+        return ParentNode("div", parent)
+
+    def text_to_children(text):
+        text_nodes = Converter. text_to_textnodes(text)
+        children = []
+        for text_node in text_nodes:
+            html_node = Converter.text_node_to_html_node(text_node)
+            children.append(html_node)
+        return children
+    
+    def create_paragrpah(text):
+        lines = text.split("\n")
+        line = " ".join(lines)
+        html_nodes = Converter.text_to_children(line)
+        return ParentNode("p", html_nodes)
+        
+
+    def create_unordered_list(block):
+        item_list = []
+        ul = []
+        items = block.split("\n")
+        for item in items:
+            item = item[2:]
+            item_list = Converter.text_to_children(item)
+            ul.append(ParentNode("li", item_list))
+
+        return ParentNode("ul", ul)
+    
+    def create_ordered_list(block):
+        ol =[]
+        items = block.split("\n")
+        for item in items:
+            item = item[3:]
+            item_list = Converter.text_to_children(item)
+            ol.append(ParentNode("li", item_list))
+        return ParentNode("ol", ol)
+            
+    def create_heading(text):
+        markers = text.count("#")
+        new_list = []
+        stripped = text[markers + 1:]
+        line = Converter.text_to_children(stripped)
+        return ParentNode(f"h{markers}", line)
+    
+    def create_codeblock(text):
+        body = ParentNode("code", None)
+        code_nodes = []
+        # strip ``` from beginning and end
+        stripped = text.strip("```")
+        lines = stripped.split("\n")
+        for line in lines:
+            code_nodes.extend(Converter.text_to_textnodes(line))
+
+        for node in code_nodes:
+            body._children.append(Converter.text_node_to_html_node(node))
+        return body
+
+    def create_block_quote(text):
+        lines = text.split("\n")
+
+        quote_lines = []
+        sentence = ""
+        for line in lines:
+            sentence += f" {line[2:]}"
+        quote_lines = Converter.text_to_children(sentence.lstrip().rstrip())
+        return ParentNode("blockquote", quote_lines)
+
+
+
+>>>>>>> 69da20b (finished converting markdown to html functionality)
 

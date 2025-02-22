@@ -1,0 +1,8 @@
+0000000000000000000000000000000000000000 741cc21ebb52efb01c74d7ebfbea3af6fc3723ab Detective-Chaff <toddoneil42@gmail.com> 1739028586 -0500	clone: from https://github.com/Detective-Chaff/Static-Site-Generator.git
+741cc21ebb52efb01c74d7ebfbea3af6fc3723ab a113d52aad6b155e65fe0fa76c26e920ab23adb9 Detective-Chaff <toddoneil42@gmail.com> 1739034130 -0500	commit: - added main file
+a113d52aad6b155e65fe0fa76c26e920ab23adb9 0ff7dac2b20d8ff2dfa8e8cd8f487a41eecf2389 Detective-Chaff <toddoneil42@gmail.com> 1739326935 -0500	commit: added HTMLnode class
+0ff7dac2b20d8ff2dfa8e8cd8f487a41eecf2389 a546cc320d778dbb15b88599c3dd5af338699982 Detective-Chaff <toddoneil42@gmail.com> 1739375569 -0500	commit: restructured file structure and added tests directory
+a546cc320d778dbb15b88599c3dd5af338699982 9a9c5c3d639bcd45e38faa1ac9b8279b48fec738 Detective-Chaff <toddoneil42@gmail.com> 1739385561 -0500	commit: added parent node and test_parentnode
+9a9c5c3d639bcd45e38faa1ac9b8279b48fec738 e8ed02525e97c9c0823d243712104ed609f63b40 Detective-Chaff <toddoneil42@gmail.com> 1739390931 -0500	commit: added Converter class to handle class converstion
+e8ed02525e97c9c0823d243712104ed609f63b40 87a49b87d793b60e4c7f370eba28a1bbf17dc480 Detective-Chaff <toddoneil42@gmail.com> 1739846907 -0500	commit: added image tag parser to Converter
+87a49b87d793b60e4c7f370eba28a1bbf17dc480 39aaef4e8fea65c5e2e187d7921b066ddc1c2956 Detective-Chaff <toddoneil42@gmail.com> 1739936344 -0500	commit: added markdown block parsing function to Converter
