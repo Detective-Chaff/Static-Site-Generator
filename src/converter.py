@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 from src.parentnode import ParentNode
->>>>>>> 69da20b (finished converting markdown to html functionality)
 from src.textnode import TextNode, TextType
 from src.leafnode import LeafNode
 from enum import Enum
@@ -185,8 +182,8 @@ class Converter():
             return BlockType.U_LIST
         
         #Quote
-        ul = r'^>|\r?\\n?>'
-        pattern = re.compile(ul)
+        quote = r'^>|\r?\\n?>'
+        pattern = re.compile(quote)
         match = pattern.match(block)
         if match:
             return BlockType.QUOTE
@@ -205,8 +202,6 @@ class Converter():
         
         return BlockType.PARAGRAPH
         
-<<<<<<< HEAD
-=======
     @staticmethod
     def markdown_to_html_node(in_markdown):
         # 1. check markdown isn't empty
@@ -300,5 +295,4 @@ class Converter():
 
 
 
->>>>>>> 69da20b (finished converting markdown to html functionality)
 
