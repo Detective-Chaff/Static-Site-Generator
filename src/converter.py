@@ -1,6 +1,6 @@
-from src.parentnode import ParentNode
-from src.textnode import TextNode, TextType
-from src.leafnode import LeafNode
+from parentnode import ParentNode
+from textnode import TextNode, TextType
+from leafnode import LeafNode
 from enum import Enum
 import re
 
@@ -217,9 +217,7 @@ class Converter():
                 case(BlockType.HEADING):
                     parent.append(Converter.create_heading(block))
                 case(BlockType.CODE):
-                    parent = ParentNode("pre", None)
-                    parent._children = Converter.create_codeblock(block)
-                    return ParentNode("div", parent)
+                    parent.append(Converter.create_codeblock(block))
                 case(BlockType.QUOTE):
                     parent.append(Converter.create_block_quote(block))
                 case(BlockType.U_LIST):
@@ -265,23 +263,21 @@ class Converter():
             
     def create_heading(text):
         markers = text.count("#")
-        new_list = []
         stripped = text[markers + 1:]
         line = Converter.text_to_children(stripped)
         return ParentNode(f"h{markers}", line)
     
     def create_codeblock(text):
-        body = ParentNode("code", None)
+        nodes = []
         code_nodes = []
-        # strip ``` from beginning and end
-        stripped = text.strip("```")
+        stripped = text.lstrip("```").rstrip("```")
         lines = stripped.split("\n")
+        main_line = ""
         for line in lines:
-            code_nodes.extend(Converter.text_to_textnodes(line))
-
-        for node in code_nodes:
-            body._children.append(Converter.text_node_to_html_node(node))
-        return body
+            main_line += line.lstrip().rstrip()
+        code_nodes = Converter.text_to_children(main_line)
+        nodes.append(ParentNode("code", code_nodes)) 
+        return ParentNode("pre", nodes)
 
     def create_block_quote(text):
         lines = text.split("\n")

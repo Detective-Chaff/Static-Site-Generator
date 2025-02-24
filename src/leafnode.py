@@ -1,5 +1,5 @@
 
-from src.htmlnode import HTMLnode
+from htmlnode import HTMLnode
 
 class LeafNode(HTMLnode):
     # constructor
