@@ -1,6 +1,6 @@
 # Static-Site-Generator
 
-This project generates html files based on any markdown files located in the project's "content" directory.
+This project generates html files based on any markdown files located in the project's "content" directory. It will inject the generated html into a base template and save it to a public directory that will mirror the content directory file structure.
 
 It uses a basic markdown parser created from scratch with no 3rd party libraries.  Currently it only supports basic markdown syntax and does not allow for nested inline markdown elements such as:
 
