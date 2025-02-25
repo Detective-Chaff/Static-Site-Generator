@@ -72,33 +72,26 @@ class Converter():
     def split_nodes_img(old_nodes):
         nodes = old_nodes
         new_nodes = []
-
-        if not nodes:
-            return new_nodes
-        
         for node in nodes:
             if node.text_type != TextType.TEXT:
                 new_nodes.append(node)
                 continue
 
             new_text = node.text
-            link_info = Converter.extract_markdown_images(new_text)
-            if len(link_info) == 0:
+            imgs = Converter.extract_markdown_images(new_text)
+            if len(imgs) == 0:
                 new_nodes.append(node)
                 continue
 
-            for link in link_info:
-                t_value, url = link
-                link_markdown = f"![{t_value}]({url})"
-                start = new_text.find(link_markdown)
-                end = start + len(link_markdown)
-                if start == 0:
-                    new_nodes.append(TextNode(t_value, TextType.IMAGES, url))
-                else:
-                    new_nodes.append(TextNode(new_text[:start], TextType.TEXT))
-                    new_nodes.append(TextNode(t_value, TextType.IMAGES, url))
-                new_text = new_text[end:]
-            if len(new_text) != 0:
+            for img in imgs:
+                blocks = new_text.split(f"![{img[0]}]({img[1]})", 1)
+                if len(blocks) != 2:
+                    raise ValueError("invalid markdown, image section not closed")
+                if blocks[0] != "":
+                    new_nodes.append(TextNode(blocks[0], TextType.TEXT))
+                    new_nodes.append(TextNode(img[0], TextType.IMAGES, img[1]))
+                new_text = blocks[1]
+            if new_text != "":
                 new_nodes.append(TextNode(new_text,TextType.TEXT))
         return new_nodes
     
