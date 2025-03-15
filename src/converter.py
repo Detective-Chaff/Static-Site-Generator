@@ -1,3 +1,4 @@
+from pydoc import text
 from parentnode import ParentNode
 from textnode import TextNode, TextType
 from leafnode import LeafNode
@@ -16,24 +17,24 @@ class Converter():
 
     @staticmethod
     def text_node_to_html_node(text_node):
-        if isinstance(text_node, TextNode):
-            match (text_node.text_type):
-                case (TextType.TEXT):
-                    return LeafNode(None, text_node.text)
-                case (TextType.BOLD):
-                    return LeafNode("b", text_node.text)
-                case (TextType.ITALICS):
-                    return LeafNode("i", text_node.text)
-                case (TextType.CODE):
-                    return LeafNode("code", text_node.text)
-                case (TextType.LINKS):
-                    return LeafNode("a", text_node.text, {"href": text_node.url})
-                case (TextType.IMAGES):
-                    return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
-                case _:
-                    raise Exception("Text Type not supported")
-        else:
-            raise Exception("must provide a TextNode type")
+        # if isinstance(text_node, TextNode):
+        match (text_node.text_type):
+            case (TextType.TEXT):
+                return LeafNode(None, text_node.text)
+            case (TextType.BOLD):
+                return LeafNode("b", text_node.text)
+            case (TextType.ITALICS):
+                return LeafNode("i", text_node.text)
+            case (TextType.CODE):
+                return LeafNode("code", text_node.text)
+            case (TextType.LINKS):
+                return LeafNode("a", text_node.text, {"href": text_node.url})
+            case (TextType.IMAGES):
+                return LeafNode("img", " ", {"src": text_node.url, "alt": text_node.text})
+            case _:
+                raise Exception("Text Type not supported")
+        # else:
+        #     raise Exception("must provide a TextNode type")
     
     @staticmethod
     def split_nodes_delimiter(nodes, delim, type):
@@ -58,7 +59,7 @@ class Converter():
     
     @staticmethod
     def extract_markdown_images(text):
-        pattern = re.compile(r'\!\[([^\[\]]*)\]\(([^\(\)]*)\)')
+        pattern = re.compile(r'!\[([^\[\]]*)\]\(([^\(\)]*)\)')
         result = re.findall(pattern, text)
         return result
 
@@ -70,26 +71,23 @@ class Converter():
     
     @staticmethod
     def split_nodes_img(old_nodes):
-        nodes = old_nodes
         new_nodes = []
-        for node in nodes:
+        for node in old_nodes:
             if node.text_type != TextType.TEXT:
                 new_nodes.append(node)
                 continue
-
             new_text = node.text
             imgs = Converter.extract_markdown_images(new_text)
             if len(imgs) == 0:
                 new_nodes.append(node)
                 continue
-
             for img in imgs:
                 blocks = new_text.split(f"![{img[0]}]({img[1]})", 1)
                 if len(blocks) != 2:
                     raise ValueError("invalid markdown, image section not closed")
                 if blocks[0] != "":
                     new_nodes.append(TextNode(blocks[0], TextType.TEXT))
-                    new_nodes.append(TextNode(img[0], TextType.IMAGES, img[1]))
+                new_nodes.append(TextNode(img[0], TextType.IMAGES, img[1],))
                 new_text = blocks[1]
             if new_text != "":
                 new_nodes.append(TextNode(new_text,TextType.TEXT))
@@ -123,7 +121,7 @@ class Converter():
                     new_nodes.append(TextNode(t_value, TextType.LINKS, url))
                 else:
                     new_nodes.append(TextNode(new_text[:start], TextType.TEXT))
-                    new_nodes.append(TextNode(t_value, TextType.LINKS, url))
+                new_nodes.append(TextNode(t_value, TextType.LINKS, url))
                 new_text = new_text[end:]
             if len(new_text) != 0:
                 new_nodes.append(TextNode(new_text,TextType.TEXT))
@@ -131,15 +129,14 @@ class Converter():
     
     @staticmethod
     def text_to_textnodes(text):
-        if text == "":
-            return text
-        node = TextNode(text, TextType.TEXT)
-        new_nodes = Converter.split_nodes_delimiter([node], "**", TextType.BOLD)
+        # if text == "":
+        #     return text
+        new_nodes = [TextNode(text, TextType.TEXT)]
+        new_nodes = Converter.split_nodes_delimiter(new_nodes, "**", TextType.BOLD)
         new_nodes = Converter.split_nodes_delimiter(new_nodes, "*", TextType.ITALICS)
         new_nodes = Converter.split_nodes_delimiter(new_nodes, "`", TextType.CODE)
         new_nodes = Converter.split_nodes_img(new_nodes)
         new_nodes = Converter.split_nodes_links(new_nodes)
-
         return new_nodes
 
     @staticmethod    
@@ -220,7 +217,7 @@ class Converter():
         return ParentNode("div", parent)
 
     def text_to_children(text):
-        text_nodes = Converter. text_to_textnodes(text)
+        text_nodes = Converter.text_to_textnodes(text)
         children = []
         for text_node in text_nodes:
             html_node = Converter.text_node_to_html_node(text_node)
