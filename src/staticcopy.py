@@ -64,13 +64,13 @@ def generate_page(from_path, template_path, dest_path, basepath):
 
             # Inject Content
             final = title_replace.replace("{{ Content }}", html)
-            template = template.replace('href="/', 'href="' + basepath)
+            template = final.replace('href="/', 'href="' + basepath)
             template = template.replace('src="/', 'src="' + basepath)
         
         dest = os.path.dirname(dest_path)
         os.makedirs(dest, exist_ok= True)
         with open(dest_path, "w") as wf:
-            wf.write(final)
+            wf.write(template)
 
 
 def generate_pages_recursive(from_path, template_path, dest_path, basepath):
@@ -87,20 +87,6 @@ def generate_pages_recursive(from_path, template_path, dest_path, basepath):
         if os.path.isfile(path):
             dest = os.path.join(dest, item).replace("md", "html")
             generate_page(path, template_path, dest, basepath)
-            # with open(path) as md_file:
-            #     markdown = md_file.read()
-            
-            # with open(template_path) as temp_file:
-            #     template = temp_file.read()
-        
-            # title = extract_title(markdown)
-            # node = Converter.markdown_to_html_node(markdown)
-            # html = node.to_html()
-            # title_replace = template.replace("{{ Title }}", title)
-            # final = title_replace.replace("{{ Content }}", html)
-
-            # with open(dest, "w") as wf:
-            #     wf.write(final) 
         else:
             dest = os.path.join(dest_path, item)
             generate_pages_recursive(path, template_path, dest, basepath)
